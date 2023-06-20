@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import br.com.fiap.store.bean.Categoria;
 import br.com.fiap.store.bean.Produto;
+import br.com.fiap.store.dao.CategoriaDAO;
 import br.com.fiap.store.dao.ProdutoDAO;
 import br.com.fiap.store.exception.DBException;
 import br.com.fiap.store.factory.DAOFactory;
@@ -22,11 +24,13 @@ public class ProdutoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private ProdutoDAO dao;
+	private CategoriaDAO categoriaDao;
 
 	@Override
 	public void init() throws ServletException {
 		super.init();
 		dao = DAOFactory.getProdutoDAO();
+		categoriaDao = DAOFactory.getCategoriaDAO();
 	}
 
 	@Override
@@ -40,8 +44,22 @@ public class ProdutoServlet extends HttpServlet {
 		case "abrir-form-edicao":
 			abrirFormEdicao(request, response);
 			break;
+		case "abrir-form-cadastro":
+			abrirFormCadastro(request, response);
+			break;
 		}
 		
+	}
+
+	private void abrirFormCadastro(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		carregarOpcoesCategoria(request);
+		request.getRequestDispatcher("cadastro-produto.jsp").forward(request, response);
+	}
+
+	private void carregarOpcoesCategoria(HttpServletRequest request) {
+		List<Categoria> lista = categoriaDao.listar();
+		request.setAttribute("categorias", lista);
 	}
 
 	private void abrirFormEdicao(HttpServletRequest request, HttpServletResponse response)
@@ -49,6 +67,7 @@ public class ProdutoServlet extends HttpServlet {
 		int id = Integer.parseInt(request.getParameter("codigo"));
 		Produto produto = dao.buscar(id);
 		request.setAttribute("produto", produto);
+		carregarOpcoesCategoria(request);
 		request.getRequestDispatcher("edicao-produto.jsp").forward(request, response);
 	}
 
@@ -98,8 +117,14 @@ public class ProdutoServlet extends HttpServlet {
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			Calendar fabricacao = Calendar.getInstance();
 			fabricacao.setTime(format.parse(request.getParameter("fabricacao")));
+			int codigoCategoria = Integer.parseInt(request.getParameter("categoria"));
+
+			Categoria categoria = new Categoria();
+			categoria.setCodigo(codigoCategoria);
+			
 
 			Produto produto = new Produto(codigo, nome, preco, fabricacao, quantidade);
+			produto.setCategoria(categoria);
 			dao.atualizar(produto);
 
 			request.setAttribute("msg", "Produto atualizado!");
@@ -122,8 +147,14 @@ public class ProdutoServlet extends HttpServlet {
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			Calendar fabricacao = Calendar.getInstance();
 			fabricacao.setTime(format.parse(request.getParameter("fabricacao")));
+			int codigoCategoria = Integer.parseInt(request.getParameter("categoria"));
 
+			Categoria categoria = new Categoria();
+			categoria.setCodigo(codigoCategoria);
+			
 			Produto produto = new Produto(0, nome, preco, fabricacao, quantidade);
+			produto.setCategoria(categoria);
+			
 			dao.cadastrar(produto);
 
 			request.setAttribute("msg", "Produto cadastrado!");
@@ -134,7 +165,6 @@ public class ProdutoServlet extends HttpServlet {
 			e.printStackTrace();
 			request.setAttribute("erro", "Por favor, valide os dados");
 		}
-		request.getRequestDispatcher("cadastro-produto.jsp").forward(request, response);
+		abrirFormCadastro(request, response);
 	}
-
 }

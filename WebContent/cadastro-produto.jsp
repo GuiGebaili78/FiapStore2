@@ -36,6 +36,15 @@
 			<label for="id-fabricacao">Data de Fabricação</label>
 			<input type="text" name="fabricacao" id="id-fabricacao" class="form-control">
 		</div>
+		<div class="form-group">
+			<label for="id-categoria">Categoria</label>
+			<select name="categoria" id="id-categoria" class="form-control">
+				<option value="0">Selecione</option>
+				<c:forEach items="${categorias }" var="c">
+					<option value="${c.codigo }" >${c.nome }</option>
+				</c:forEach>
+			</select>
+		</div>
 		<input type="submit" value="Salvar" class="btn btn-primary">
 	</form>
 </div>
