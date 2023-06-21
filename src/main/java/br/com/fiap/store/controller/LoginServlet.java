@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String email = request.getParameter("e");
+		String email = request.getParameter("email");
 		String senha = request.getParameter("senha");
 		
 		Usuario usuario = new Usuario(email, senha);
@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
 		if (dao.validarUsuario(usuario)) {
 			HttpSession session = request.getSession();
 			session.setAttribute("user", email);
-			String mensagem = "Um login foi realizado”;"
+			String mensagem = "Realizado";
 			try {
 				bo.enviarEmail(email, "Login Realizado", mensagem);
 			} catch (EmailException e) {
@@ -45,12 +45,6 @@ public class LoginServlet extends HttpServlet {
 		}else {
 			request.setAttribute("erro", "Usuário e/ou senha inválidos");
 		}
-		request.getRequestDispatcher("home.jsp").forward(request, response);
-	}
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		session.invalidate();
 		request.getRequestDispatcher("home.jsp").forward(request, response);
 	}
 
