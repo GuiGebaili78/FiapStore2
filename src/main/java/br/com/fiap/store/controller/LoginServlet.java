@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
 		if (dao.validarUsuario(usuario)) {
 			HttpSession session = request.getSession();
 			session.setAttribute("user", email);
-			String mensagem = "Realizado";
+			String mensagem = "Seu login foi Realizado";
 			try {
 				bo.enviarEmail(email, "Login Realizado", mensagem);
 			} catch (EmailException e) {

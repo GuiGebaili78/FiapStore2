@@ -74,7 +74,7 @@ public class ProdutoServlet extends HttpServlet {
 	private void listar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Produto> lista = dao.listar();
 		request.setAttribute("produtos", lista);
-		request.getRequestDispatcher("lista-produto.jsp").forward(request, response);
+		request.getRequestDispatcher("lista-produtos.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

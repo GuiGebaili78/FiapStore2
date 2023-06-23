@@ -14,7 +14,7 @@ import br.com.fiap.store.exception.EmailException;
 public class EmailBO {
 
 	public void enviarEmail(String destinatario, String assunto, String mensagem) throws EmailException{
-		final String username = "guilhermecorretor@gmail.com";
+		final String username = "guilhermecorretor33@gmail.com";
 		final String password = "Banda@1234";
 
 		Properties props = new Properties();
